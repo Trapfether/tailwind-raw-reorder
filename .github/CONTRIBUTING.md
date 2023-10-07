@@ -4,4 +4,4 @@ Headwind is open-source and contributions are always welcome. If you're interest
 
 ## Pull requests
 
-Thinking of submitting a pull request? Please check the [issues page](https://github.com/heybourn/headwind/issues) to ensure your idea is not already being implemented or discussed.
+Thinking of submitting a pull request? Please check the [issues page](prettier/issues) to ensure your idea is not already being implemented or discussed.

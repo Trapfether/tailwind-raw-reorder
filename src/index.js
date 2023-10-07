@@ -1,52 +1,46 @@
+// @ts-check
 'use strict';
 
-import { commands, workspace, ExtensionContext, Range, window } from 'vscode';
-import { sortClassString, getTextMatch, buildMatchers } from './utils';
+import { commands, workspace, Range, window } from 'vscode';
+import { getTextMatch, buildMatchers } from './utils';
 import { spawn } from 'child_process';
 import { rustyWindPath } from 'rustywind';
+import { getTailwindConfig } from './config.js';
+import { sortClasses } from './sorting.js'
 
-export type LangConfig =
-	| string
-	| string[]
-	| { regex?: string | string[]; separator?: string; replacement?: string }
-	| undefined;
+/**
+ * @typedef {import('vscode').ExtensionContext} ExtensionContext
+ */
+
+/**
+ * @typedef {string | string[] | { regex?: string | string[]; separator?: string; replacement?: string } | undefined} LangConfig
+ */
 
 const config = workspace.getConfiguration();
-const langConfig: { [key: string]: LangConfig | LangConfig[] } =
-	config.get('headwind.classRegex') || {};
+/** @type {{ [key: string]: LangConfig | LangConfig[] }} */
+const langConfig =
+	config.get('tailwind-raw-reorder.classRegex') || {};
 
-const sortOrder = config.get('headwind.defaultSortOrder');
-
-const customTailwindPrefixConfig = config.get('headwind.customTailwindPrefix');
-const customTailwindPrefix =
-	typeof customTailwindPrefixConfig === 'string'
-		? customTailwindPrefixConfig
-		: '';
-
-const shouldRemoveDuplicatesConfig = config.get('headwind.removeDuplicates');
-const shouldRemoveDuplicates =
-	typeof shouldRemoveDuplicatesConfig === 'boolean'
-		? shouldRemoveDuplicatesConfig
-		: true;
-
-const shouldPrependCustomClassesConfig = config.get(
-	'headwind.prependCustomClasses'
-);
-const shouldPrependCustomClasses =
-	typeof shouldPrependCustomClassesConfig === 'boolean'
-		? shouldPrependCustomClassesConfig
-		: false;
-
-export function activate(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} context
+ */
+export function activate(context) {
 	let disposable = commands.registerTextEditorCommand(
-		'headwind.sortTailwindClasses',
+		'tailwind-raw-reorder.sortTailwindClasses',
 		function (editor, edit) {
 			const editorText = editor.document.getText();
 			const editorLangId = editor.document.languageId;
+			const editorFilePath = editor.document.fileName;
 
 			const matchers = buildMatchers(
 				langConfig[editorLangId] || langConfig['html']
 			);
+
+			const tailwindConfig = getTailwindConfig({
+				filepath: editorFilePath
+			});
+
+			const sorter = tailwindConfig.context.getClassOrder;
 
 			for (const matcher of matchers) {
 				getTextMatch(matcher.regex, editorText, (text, startPosition) => {
@@ -57,20 +51,14 @@ export function activate(context: ExtensionContext) {
 					);
 
 					const options = {
-						shouldRemoveDuplicates,
-						shouldPrependCustomClasses,
-						customTailwindPrefix,
 						separator: matcher.separator,
 						replacement: matcher.replacement,
+						env: tailwindConfig
 					};
 
 					edit.replace(
 						range,
-						sortClassString(
-							text,
-							Array.isArray(sortOrder) ? sortOrder : [],
-							options
-						)
+						sortClasses(text, options)
 					);
 				});
 			}
@@ -78,18 +66,17 @@ export function activate(context: ExtensionContext) {
 	);
 
 	let runOnProject = commands.registerCommand(
-		'headwind.sortTailwindClassesOnWorkspace',
+		'tailwind-raw-reorder.sortTailwindClassesOnWorkspace',
 		() => {
 			let workspaceFolder = workspace.workspaceFolders || [];
 			if (workspaceFolder[0]) {
 				window.showInformationMessage(
-					`Running Headwind on: ${workspaceFolder[0].uri.fsPath}`
+					`Running Tailwind Raw Reorder on: ${workspaceFolder[0].uri.fsPath}`
 				);
 
 				let rustyWindArgs = [
 					workspaceFolder[0].uri.fsPath,
 					'--write',
-					shouldRemoveDuplicates ? '' : '--allow-duplicates',
 				].filter((arg) => arg !== '');
 
 				let rustyWindProc = spawn(rustyWindPath, rustyWindArgs);
@@ -105,7 +92,7 @@ export function activate(context: ExtensionContext) {
 				rustyWindProc.stderr.on('data', (data) => {
 					if (data && data.toString() !== '') {
 						console.log('rustywind stderr:\n', data.toString());
-						window.showErrorMessage(`Headwind error: ${data.toString()}`);
+						window.showErrorMessage(`Tailwind Raw Reorder error: ${data.toString()}`);
 					}
 				});
 			}
@@ -116,10 +103,10 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	// if runOnSave is enabled organize tailwind classes before saving
-	if (config.get('headwind.runOnSave')) {
+	if (config.get('tailwind-raw-reorder.runOnSave')) {
 		context.subscriptions.push(
 			workspace.onWillSaveTextDocument((_e) => {
-				commands.executeCommand('headwind.sortTailwindClasses');
+				commands.executeCommand('tailwind-raw-reorder.sortTailwindClasses');
 			})
 		);
 	}

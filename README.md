@@ -1,37 +1,31 @@
-# Headwind
+# Tailwind Raw Reorder
 
 [![CircleCI](https://circleci.com/gh/heybourn/headwind.svg?style=svg)](https://circleci.com/gh/heybourn/headwind)
 
-Headwind is an opinionated Tailwind CSS class sorter for Visual Studio Code. It enforces consistent ordering of classes by parsing your code and reprinting class tags to follow a given order.
+Tailwind Raw Reorder is an opinionated Tailwind CSS class sorter for Visual Studio Code. It enforces consistent ordering of classes by parsing your code and reprinting class tags to follow a given order.
 
-> Headwind runs on save, will remove duplicate classes and can even sort entire workspaces.
+> Tailwind Raw Reorder runs on save, will remove duplicate classes and can even sort entire workspaces.
 
 ---
 
-**[Get it from the VS Code Marketplace →](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind)**
+<!-- **[Get it from the VS Code Marketplace →](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind)** -->
 
-**[Use PHPStorm? Get @WalrusSoup's Headwind port →](https://plugins.jetbrains.com/plugin/13376-tailwind-formatter/)**
-
-<img src="https://github.com/heybourn/headwind/blob/master/img/explainer.gif?raw=true" alt="Explainer" width="750px">
+<!-- <img src="https://github.com/heybourn/headwind/blob/master/img/explainer.gif?raw=true" alt="Explainer" width="750px"> -->
 
 ## Usage
 
-You can install Headwind via the VS Code Marketplace, or package it yourself using [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension). Headwind works globally once installed and will run on save if a `tailwind.config.js` file is present within your working directory.
+You can install Tailwind Raw Reorder via the VS Code Marketplace, or package it yourself using [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension). Tailwind Raw Reorder works globally once installed and will run on save if a `tailwind.config.js` file is present within your working directory.
 
-You can also trigger Headwind by:
+You can also trigger Tailwind Raw Reorder by:
 
 * Pressing ALT + Shift + T on Mac
 * Pressing CTRL + ALT + T on Windows
 * Pressing CTRL + ALT + T on Linux
 
 
-Headwind can sort individual files by running 'Sort Tailwind CSS Classes' via the Command Palette. Workspaces can also be sorted by running 'Sort Tailwind CSS Classes on Entire Workspace'.
+Tailwind Raw Reorder can sort individual files by running 'Sort Tailwind CSS Classes' via the Command Palette. Workspaces can also be sorted by running 'Sort Tailwind CSS Classes on Entire Workspace'.
 
 Any breakpoints or unknown classes will be moved to the end of the class list, whilst duplicate classes will be removed.
-
-## Customisation
-
-Headwind ships with a default class order (located in [package.json](package.json)). You can edit this (and other settings) to your liking on the extension settings page.
 
 ### `headwind.classRegex`:
 
@@ -125,52 +119,36 @@ The result of `valueMatch` should be the class text _exactly_, with no other cha
 
 Good example value: `valueMatch w-64 h-full bg-blue-400 relative`
 
-**Note**: Changes made to Headwind's JSON configuration options may not take effect immediately. When experimenting with custom `classRegex`, after each change you should open the control pallete (Ctrl/Cmd + Shift + P) and run `Developer: Reload Window` to ensure changes are applied.
+**Note**: Changes made to Tailwind Raw Reorder's JSON configuration options may not take effect immediately. When experimenting with custom `classRegex`, after each change you should open the control pallete (Ctrl/Cmd + Shift + P) and run `Developer: Reload Window` to ensure changes are applied.
 
 <hr>
 
-### `headwind.defaultSortOrder`:
+### `tailwind-raw-reorder.runOnSave`:
 
-An array that determines Headwind's default sort order.
+Tailwind Raw Reorder will run on save by default (if a `tailwind.config.js` file is present within your working directory). This can be toggled on or off.
 
-### `headwind.removeDuplicates`:
-
-Headwind will remove duplicate class names by default. This can be toggled on or off.
-
-`"headwind.removeDuplicates": false`
-
-### `headwind.prependCustomClasses`:
-
-Headwind will append custom class names by default. They can be prepended instead.
-
-`"headwind.prependCustomClasses": true`
-
-### `headwind.runOnSave`:
-
-Headwind will run on save by default (if a `tailwind.config.js` file is present within your working directory). This can be toggled on or off.
-
-`"headwind.runOnSave": false`
+`"tailwind-raw-reorder.runOnSave": false`
 
 ## Contributing
 
-Headwind is open-source and contributions are always welcome. If you're interested in submitting a pull request, please take a moment to review [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+Tailwind Raw Reorder is open-source and contributions are always welcome. If you're interested in submitting a pull request, please take a moment to review [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## Contributors
 
 ### Code Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/heybourn/headwind/graphs/contributors"><img src="https://opencollective.com/headwind/contributors.svg?width=890&button=false" /></a>
+<!-- <a href="https://github.com/heybourn/headwind/graphs/contributors"><img src="https://opencollective.com/headwind/contributors.svg?width=890&button=false" /></a> -->
 
-### Financial Contributors
+<!-- ### Financial Contributors
 
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/headwind/contribute)]
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/headwind/contribute)] -->
 
-#### Individuals
+<!-- #### Individuals
 
-<a href="https://opencollective.com/headwind"><img src="https://opencollective.com/headwind/individuals.svg?width=890"></a>
+<a href="https://opencollective.com/headwind"><img src="https://opencollective.com/headwind/individuals.svg?width=890"></a> -->
 
-#### Organizations
+<!-- #### Organizations
 
 Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/headwind/contribute)]
 
@@ -183,4 +161,14 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/headwind/organization/6/website"><img src="https://opencollective.com/headwind/organization/6/avatar.svg"></a>
 <a href="https://opencollective.com/headwind/organization/7/website"><img src="https://opencollective.com/headwind/organization/7/avatar.svg"></a>
 <a href="https://opencollective.com/headwind/organization/8/website"><img src="https://opencollective.com/headwind/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/headwind/organization/9/website"><img src="https://opencollective.com/headwind/organization/9/avatar.svg"></a>
+<a href="https://opencollective.com/headwind/organization/9/website"><img src="https://opencollective.com/headwind/organization/9/avatar.svg"></a> -->
+
+### Forked from [heybourn/headwind]
+
+This project was forked from [[heybourn/headwind](https://github.com/heybourn/headwind)] to continue development. Old repo is inactive as of 2023 Oct 6th.
+
+Thanks to all the contributors of the original project.
+
+## License
+
+Tailwind Raw Reorder is open-source software licensed under the [MIT license](LICENSE.md).
