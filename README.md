@@ -27,7 +27,7 @@ Tailwind Raw Reorder can sort individual files by running 'Sort Tailwind CSS Cla
 
 Any breakpoints or unknown classes will be moved to the end of the class list, whilst duplicate classes will be removed.
 
-### `headwind.classRegex`:
+### `tailwind-raw-reorder.classRegex`:
 
 An object with language IDs as keys and their values determining the regex to search for Tailwind CSS classes.
 The default is located in [package.json](package.json) but this can be customized to suit your needs.
@@ -37,7 +37,7 @@ There can be multiple capturing groups, that should only contain a string with T
 Example from `package.json`:
 
 ```json
-"headwind.classRegex": {
+"tailwind-raw-reorder.classRegex": {
     "html": "\\bclass\\s*=\\s*[\\\"\\']([_a-zA-Z0-9\\s\\-\\:\\/]+)[\\\"\\']",
     "javascriptreact": "(?:\\bclassName\\s*=\\s*[\\\"\\']([_a-zA-Z0-9\\s\\-\\:\\/]+)[\\\"\\'])|(?:\\btw\\s*`([_a-zA-Z0-9\\s\\-\\:\\/]*)`)"
 }
@@ -50,7 +50,7 @@ A multi-step regex can be specified by using an array of regexes to be executed 
 Example from `package.json`:
 
 ```js
-"headwind.classRegex": {
+"tailwind-raw-reorder.classRegex": {
     "javascript": [
         "(?:\\bclass(?:Name)?\\s*=\\s*(?:{([\\w\\d\\s_\\-:/${}()[\\]\"'`,]+)})|([\"'`][\\w\\d\\s_\\-:/]+[\"'`]))|(?:\\btw\\s*(`[\\w\\d\\s_\\-:/]+`))",
         "(?:[\"'`]([\\w\\d\\s_\\-:/${}()[\\]\"']+)[\"'`])"
@@ -73,7 +73,7 @@ Optionally a configuration object can be passed to specify additional options fo
 Example from `package.json`:
 
 ```js
-"headwind.classRegex": {
+"tailwind-raw-reorder.classRegex": {
     "jade": [
         {
             "regex": "\\.([\\._a-zA-Z0-9\\-]+)",
