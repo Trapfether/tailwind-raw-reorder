@@ -7,9 +7,11 @@ import resolveFrom from 'resolve-from'
 import { generateRules as generateRulesFallback } from 'tailwindcss/lib/lib/generateRules'
 // @ts-ignore
 import { createContext as createContextFallback } from 'tailwindcss/lib/lib/setupContextUtils'
+// @ts-ignore
 import loadConfigFallback from 'tailwindcss/loadConfig'
+// @ts-ignore
 import resolveConfigFallback from 'tailwindcss/resolveConfig'
-import { expiringMap } from './expiring-map.js'
+import { expiringMap } from './expiring-map.mjs'
 
 /**
  * @typedef {{context: any, tailwindConfig: any, generateRules: any}} ContextContainer
@@ -18,7 +20,7 @@ import { expiringMap } from './expiring-map.js'
 /**
  * @template K
  * @template V
- * @typedef {import('./expiring-map.js').ExpiringMap<K,V>} ExpiringMap
+ * @typedef {import('./expiring-map.mjs').ExpiringMap<K,V>} ExpiringMap
  **/
 
 /** @type {Map<string, string | null>} */
@@ -135,7 +137,7 @@ function getConfigPath(options, baseDir) {
 
   let configPath
   try {
-    configPath = escalade(baseDir, (_dir, names) => {
+    configPath = escalade.default(baseDir, (_dir, names) => {
       if (names.includes('tailwind.config.js')) {
         return 'tailwind.config.js'
       }

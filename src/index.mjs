@@ -2,11 +2,11 @@
 'use strict';
 
 import { commands, workspace, Range, window } from 'vscode';
-import { getTextMatch, buildMatchers } from './utils';
+import { getTextMatch, buildMatchers } from './utils.mjs';
 import { spawn } from 'child_process';
 import { rustyWindPath } from 'rustywind';
-import { getTailwindConfig } from './config.js';
-import { sortClasses } from './sorting.js'
+import { getTailwindConfig } from './config.mjs';
+import { sortClasses } from './sorting.mjs'
 
 /**
  * @typedef {import('vscode').ExtensionContext} ExtensionContext
@@ -39,8 +39,6 @@ export function activate(context) {
 			const tailwindConfig = getTailwindConfig({
 				filepath: editorFilePath
 			});
-
-			const sorter = tailwindConfig.context.getClassOrder;
 
 			for (const matcher of matchers) {
 				getTextMatch(matcher.regex, editorText, (text, startPosition) => {
