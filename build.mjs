@@ -70,7 +70,7 @@ let context = await esbuild.context({
   target: 'node14.21.3',
   external: ["vscode"],
   minify: true,
-  entryPoints: [path.resolve(__dirname, './src/index.mjs')],
+  entryPoints: [path.resolve(__dirname, './src/loader.js')],
   outfile: path.resolve(__dirname, './dist/index.js'),
   format: 'cjs',
   plugins: [patchRecast()],
