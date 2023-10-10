@@ -137,7 +137,9 @@ function getConfigPath(options, baseDir) {
 
   let configPath
   try {
-    configPath = escalade.default(baseDir, (_dir, names) => {
+		// This is a hack because typescript does not correctly resolve the type of the import
+		const useEscalade = /** @type {escalade.default} */(/** @type {unknown} */(escalade));
+    configPath = useEscalade(baseDir, (_dir, names) => {
       if (names.includes('tailwind.config.js')) {
         return 'tailwind.config.js'
       }
