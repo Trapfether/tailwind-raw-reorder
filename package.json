@@ -104,7 +104,8 @@
         "_pre": "rimraf dist && cpy node_modules/tailwindcss/lib/css dist/css",
         "_esbuild": "node build.mjs",
         "prebuild": "npm run _pre",
-        "build": "npm run _esbuild -- --minify"
+        "build": "npm run _esbuild -- --minify",
+				"test": "mocha"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.149",
@@ -116,6 +117,7 @@
         "escalade": "^3.1.1",
         "eslint": "^8.51.0",
         "eslint-config-google": "^0.14.0",
+        "mocha": "^10.2.0",
         "resolve-from": "^5.0.0",
         "rimraf": "^5.0.5",
         "tailwindcss": "^3.3.3",
