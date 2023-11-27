@@ -26,7 +26,7 @@
         "Other"
     ],
     "activationEvents": [
-        "workspaceContains:**/tailwind.config.js"
+        "workspaceContains:**/tailwind.config.*"
     ],
     "main": "./dist/index.js",
     "contributes": {
