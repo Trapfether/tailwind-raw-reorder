@@ -87,7 +87,15 @@ function loadTailwindConfig(baseDir, tailwindConfigPath) {
   let generateRules = generateRulesFallback
   let resolveConfig = resolveConfigFallback
   let loadConfig = loadConfigFallback
-  let tailwindConfig = {}
+  let tailwindConfig = {
+		// all html, css, and js files in the workspace
+		content: ['**/*.html', '**/*.css', '**/*.js'],
+		plugins: [
+		],
+		corePlugins: {
+			preflight: false,
+		},
+	}
 
   try {
     let pkgDir = path.dirname(resolveFrom(baseDir, 'tailwindcss/package.json'))
@@ -104,7 +112,8 @@ function loadTailwindConfig(baseDir, tailwindConfigPath) {
 
     // Prior to `tailwindcss@3.3.0` this won't exist so we load it last
     loadConfig = require(path.join(pkgDir, 'loadConfig'))
-  } catch {}
+  } catch {
+	}
 
   if (tailwindConfigPath) {
     clearModule(tailwindConfigPath)
