@@ -88,14 +88,11 @@ function loadTailwindConfig(baseDir, tailwindConfigPath) {
   let resolveConfig = resolveConfigFallback
   let loadConfig = loadConfigFallback
   let tailwindConfig = {
-		// all html, css, and js files in the workspace
-		content: ['**/*.html', '**/*.css', '**/*.js'],
-		plugins: [
-		],
-		corePlugins: {
-			preflight: false,
-		},
-	}
+    // all html, css, and js files in the workspace
+    content: ['**/*.html', '**/*.css', '**/*.js'],
+    plugins: [
+    ]
+  }
 
   try {
     let pkgDir = path.dirname(resolveFrom(baseDir, 'tailwindcss/package.json'))
@@ -113,7 +110,7 @@ function loadTailwindConfig(baseDir, tailwindConfigPath) {
     // Prior to `tailwindcss@3.3.0` this won't exist so we load it last
     loadConfig = require(path.join(pkgDir, 'loadConfig'))
   } catch {
-	}
+  }
 
   if (tailwindConfigPath) {
     clearModule(tailwindConfigPath)
@@ -146,8 +143,8 @@ function getConfigPath(options, baseDir) {
 
   let configPath
   try {
-		// This is a hack because typescript does not correctly resolve the type of the import
-		const useEscalade = /** @type {escalade.default} */(/** @type {unknown} */(escalade));
+    // This is a hack because typescript does not correctly resolve the type of the import
+    const useEscalade = /** @type {escalade.default} */(/** @type {unknown} */(escalade));
     configPath = useEscalade(baseDir, (_dir, names) => {
       if (names.includes('tailwind.config.js')) {
         return 'tailwind.config.js'

@@ -19,133 +19,147 @@ import { sortClasses } from './sorting.mjs'
 const config = workspace.getConfiguration();
 /** @type {{ [key: string]: LangConfig | LangConfig[] }} */
 const langConfig =
-	config.get('tailwind-raw-reorder.classRegex') || {};
+  config.get('tailwind-raw-reorder.classRegex') || {};
 
 /**
  * @param {ExtensionContext} context
  */
 export function activate(context) {
-	let disposable = commands.registerTextEditorCommand(
-		'tailwind-raw-reorder.sortTailwindClasses',
-		function (editor, edit) {
-			const editorText = editor.document.getText();
-			const editorLangId = editor.document.languageId;
-			const editorFilePath = editor.document.fileName;
+  let disposable = commands.registerTextEditorCommand(
+    'tailwind-raw-reorder.sortTailwindClasses',
+    function (editor, edit) {
+      const editorText = editor.document.getText();
+      const editorLangId = editor.document.languageId;
+      const editorFilePath = editor.document.fileName;
 
-			const matchers = buildMatchers(
-				langConfig[editorLangId] || langConfig['html']
-			);
+      const matchers = buildMatchers(
+        langConfig[editorLangId] || langConfig['html']
+      );
 
-			const tailwindConfig = getTailwindConfig({
-				filepath: editorFilePath
-			});
+      const tailwindConfig = getTailwindConfig({
+        filepath: editorFilePath
+      });
 
-			for (const matcher of matchers) {
-				getTextMatch(matcher.regex, editorText, (text, startPosition) => {
-					const endPosition = startPosition + text.length;
-					const range = new Range(
-						editor.document.positionAt(startPosition),
-						editor.document.positionAt(endPosition)
-					);
+      if (!tailwindConfig) {
+        window.showErrorMessage(
+          'Tailwind Raw Reorder: Tailwind config not found'
+        );
+        return;
+      }
 
-					const options = {
-						separator: matcher.separator,
-						replacement: matcher.replacement,
-						env: tailwindConfig
-					};
+      for (const matcher of matchers) {
+        getTextMatch(matcher.regex, editorText, (text, startPosition) => {
+          const endPosition = startPosition + text.length;
+          const range = new Range(
+            editor.document.positionAt(startPosition),
+            editor.document.positionAt(endPosition)
+          );
 
-					edit.replace(
-						range,
-						sortClasses(text, options)
-					);
-				});
-			}
-		}
-	);
+          const options = {
+            separator: matcher.separator,
+            replacement: matcher.replacement,
+            env: tailwindConfig
+          };
 
-	let runOnProject = commands.registerCommand(
-		'tailwind-raw-reorder.sortTailwindClassesOnWorkspace',
-		() => {
-			let workspaceFolder = workspace.workspaceFolders || [];
-			if (workspaceFolder[0]) {
-				window.showInformationMessage(
-					`Running Tailwind Raw Reorder on: ${workspaceFolder[0].uri.fsPath}`
-				);
+          edit.replace(
+            range,
+            sortClasses(text, options)
+          );
+        });
+      }
+    }
+  );
 
-				let rustyWindArgs = [
-					workspaceFolder[0].uri.fsPath,
-					'--write',
-				].filter((arg) => arg !== '');
+  let runOnProject = commands.registerCommand(
+    'tailwind-raw-reorder.sortTailwindClassesOnWorkspace',
+    () => {
+      let workspaceFolder = workspace.workspaceFolders || [];
+      if (workspaceFolder[0]) {
+        window.showInformationMessage(
+          `Running Tailwind Raw Reorder on: ${workspaceFolder[0].uri.fsPath}`
+        );
 
-				let rustyWindProc = spawn(rustyWindPath, rustyWindArgs);
+        let rustyWindArgs = [
+          workspaceFolder[0].uri.fsPath,
+          '--write',
+        ].filter((arg) => arg !== '');
 
-				rustyWindProc.stdout.on(
-					'data',
-					(data) =>
-						data &&
-						data.toString() !== '' &&
-						console.log('rustywind stdout:\n', data.toString())
-				);
+        let rustyWindProc = spawn(rustyWindPath, rustyWindArgs);
 
-				rustyWindProc.stderr.on('data', (data) => {
-					if (data && data.toString() !== '') {
-						console.log('rustywind stderr:\n', data.toString());
-						window.showErrorMessage(`Tailwind Raw Reorder error: ${data.toString()}`);
-					}
-				});
-			}
-		}
-	);
+        rustyWindProc.stdout.on(
+          'data',
+          (data) =>
+            data &&
+            data.toString() !== '' &&
+            console.log('rustywind stdout:\n', data.toString())
+        );
 
-	let runOnSelection = commands.registerCommand(
-		'tailwind-raw-reorder.sortTailwindClassesOnSelection',
-		() => {
-			let editor = window.activeTextEditor;
-			if (editor) {
-				let selection = editor.selection;
-				let editorText = editor.document.getText(selection);
-				let editorLangId = editor.document.languageId;
-				let editorFilePath = editor.document.fileName;
+        rustyWindProc.stderr.on('data', (data) => {
+          if (data && data.toString() !== '') {
+            console.log('rustywind stderr:\n', data.toString());
+            window.showErrorMessage(`Tailwind Raw Reorder error: ${data.toString()}`);
+          }
+        });
+      }
+    }
+  );
 
-				const matchers = buildMatchers(
-					langConfig[editorLangId] || langConfig['html']
-				);
+  let runOnSelection = commands.registerCommand(
+    'tailwind-raw-reorder.sortTailwindClassesOnSelection',
+    () => {
+      let editor = window.activeTextEditor;
+      if (editor) {
+        let selection = editor.selection;
+        let editorText = editor.document.getText(selection);
+        let editorLangId = editor.document.languageId;
+        let editorFilePath = editor.document.fileName;
 
-				const tailwindConfig = getTailwindConfig({
-					filepath: editorFilePath
-				});
+        const matchers = buildMatchers(
+          langConfig[editorLangId] || langConfig['html']
+        );
 
-				for (const matcher of matchers) {
-					const seperator = matcher.separator;
-					const replacement = matcher.replacement;
+        const tailwindConfig = getTailwindConfig({
+          filepath: editorFilePath
+        });
 
-					//regex that matches a seperator seperated list of classes that may contain letters, numbers, dashes, underscores, square brackets, square brackets with single quotes inside, and forward slashes
-					const regexContent = `(?:[a-zA-Z][a-zA-Z\\/_\\-:]+(?:\\[[a-zA-Z\\/_\\-"'\\\\:\\.]\\])?(${(seperator || /\s/).source})*)+`;
-					const regex = new RegExp(regexContent);
-					if (regex.test(editorText)) {
-						const sortedText = sortClasses(editorText, {
-							seperator: seperator,
-							replacement,
-							env: tailwindConfig
-						});
-						editor.edit((editBuilder) => {
-							editBuilder.replace(selection, sortedText);
-						});
-					}
-				}
-			}
-		}
-	);
+        if (!tailwindConfig) {
+          window.showErrorMessage(
+            'Tailwind Raw Reorder: Tailwind config not found'
+          );
+          return;
+        }
 
-	context.subscriptions.push(runOnProject);
-	context.subscriptions.push(disposable);
+        for (const matcher of matchers) {
+          const seperator = matcher.separator;
+          const replacement = matcher.replacement;
 
-	// if runOnSave is enabled organize tailwind classes before saving
-	if (config.get('tailwind-raw-reorder.runOnSave')) {
-		context.subscriptions.push(
-			workspace.onWillSaveTextDocument((_e) => {
-				commands.executeCommand('tailwind-raw-reorder.sortTailwindClasses');
-			})
-		);
-	}
+          //regex that matches a seperator seperated list of classes that may contain letters, numbers, dashes, underscores, square brackets, square brackets with single quotes inside, and forward slashes
+          const regexContent = `(?:[a-zA-Z][a-zA-Z\\/_\\-:]+(?:\\[[a-zA-Z\\/_\\-"'\\\\:\\.]\\])?(${(seperator || /\s/).source})*)+`;
+          const regex = new RegExp(regexContent);
+          if (regex.test(editorText)) {
+            const sortedText = sortClasses(editorText, {
+              seperator: seperator,
+              replacement,
+              env: tailwindConfig
+            });
+            editor.edit((editBuilder) => {
+              editBuilder.replace(selection, sortedText);
+            });
+          }
+        }
+      }
+    }
+  );
+
+  context.subscriptions.push(runOnProject);
+  context.subscriptions.push(disposable);
+
+  // if runOnSave is enabled organize tailwind classes before saving
+  if (config.get('tailwind-raw-reorder.runOnSave')) {
+    context.subscriptions.push(
+      workspace.onWillSaveTextDocument((_e) => {
+        commands.executeCommand('tailwind-raw-reorder.sortTailwindClasses');
+      })
+    );
+  }
 }

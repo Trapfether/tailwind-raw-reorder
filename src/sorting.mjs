@@ -17,8 +17,8 @@
  * @returns {number}
  */
 export function bigSign(bigIntValue) {
-	const a = (bigIntValue > 0n) ? 1 : 0;
-	const b = (bigIntValue < 0n) ? 1 : 0;
+  const a = (bigIntValue > 0n) ? 1 : 0;
+  const b = (bigIntValue < 0n) ? 1 : 0;
   return  a - b;
 }
 
@@ -46,12 +46,12 @@ function getClassOrderPolyfill(classes, { env }) {
     prefixCandidate(env.context, 'peer'),
   ])
 
-	/** @type {[string, number][]} */
+  /** @type {[string, number][]} */
   let classNamesWithOrder = [];
 
   for (let className of classes) {
-		let rules = env
-		.generateRules(new Set([className]), env.context);
+    let rules = env
+    .generateRules(new Set([className]), env.context);
     let order = rules.sort(([a], [z]) => bigSign(z - a))[0]?.[0] ?? null
 
     if (order === null && parasiteUtilities.has(className)) {
