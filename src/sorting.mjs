@@ -94,6 +94,9 @@ export function sortClasses(
 
   classes = sortClassList(classes, { env })
 
+  // get rid of duplicates
+  classes = [...new Set(classes)];
+
   for (let i = 0; i < classes.length; i++) {
     result += `${classes[i]}${replacement ?? ' '}`
   }
