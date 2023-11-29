@@ -124,7 +124,8 @@
         "_esbuild": "node build.mjs",
         "prebuild": "npm run _pre",
         "build": "npm run _esbuild -- --minify",
-        "test": "mocha"
+        "test": "mocha",
+        "package": "vsce package"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.149",
