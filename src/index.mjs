@@ -97,6 +97,46 @@ export function activate(context) {
 		}
 	);
 
+	let runOnSelection = commands.registerCommand(
+		'tailwind-raw-reorder.sortTailwindClassesOnSelection',
+		() => {
+			let editor = window.activeTextEditor;
+			if (editor) {
+				let selection = editor.selection;
+				let editorText = editor.document.getText(selection);
+				let editorLangId = editor.document.languageId;
+				let editorFilePath = editor.document.fileName;
+
+				const matchers = buildMatchers(
+					langConfig[editorLangId] || langConfig['html']
+				);
+
+				const tailwindConfig = getTailwindConfig({
+					filepath: editorFilePath
+				});
+
+				for (const matcher of matchers) {
+					const seperator = matcher.separator;
+					const replacement = matcher.replacement;
+
+					//regex that matches a seperator seperated list of classes that may contain letters, numbers, dashes, underscores, square brackets, square brackets with single quotes inside, and forward slashes
+					const regexContent = `(?:[a-zA-Z][a-zA-Z\\/_\\-:]+(?:\\[[a-zA-Z\\/_\\-"'\\\\:\\.]\\])?(${(seperator || /\s/).source})*)+`;
+					const regex = new RegExp(regexContent);
+					if (regex.test(editorText)) {
+						const sortedText = sortClasses(editorText, {
+							seperator: seperator,
+							replacement,
+							env: tailwindConfig
+						});
+						editor.edit((editBuilder) => {
+							editBuilder.replace(selection, sortedText);
+						});
+					}
+				}
+			}
+		}
+	);
+
 	context.subscriptions.push(runOnProject);
 	context.subscriptions.push(disposable);
 

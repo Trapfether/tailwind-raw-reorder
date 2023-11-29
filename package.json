@@ -38,6 +38,10 @@
             {
                 "command": "tailwind-raw-reorder.sortTailwindClassesOnWorkspace",
                 "title": "Tailwind Raw Reorder: Sort Tailwind CSS Classes on Entire Workspace"
+            },
+            {
+                "command": "tailwind-raw-reorder.sortTailwindClassesOnSelection",
+                "title": "Tailwind Raw Reorder: Sort Tailwind CSS Classes on current Selection"
             }
         ],
         "keybindings": [

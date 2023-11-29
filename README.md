@@ -23,9 +23,13 @@ You can also trigger Tailwind Raw Reorder by:
 * Pressing CTRL + ALT + T on Linux
 
 
-Tailwind Raw Reorder can sort individual files by running 'Sort Tailwind CSS Classes' via the Command Palette. Workspaces can also be sorted by running 'Sort Tailwind CSS Classes on Entire Workspace'.
+Tailwind Raw Reorder can sort individual files by running 'Sort Tailwind CSS Classes' via the Command Palette.
 
-Any breakpoints or unknown classes will be moved to the end of the class list, whilst duplicate classes will be removed.
+Workspaces can also be sorted by running 'Sort Tailwind CSS Classes on Entire Workspace'.
+
+Your current selection can be sorted by running 'sort Tailwind CSS Classes on Selection'. You should select only the classes you want to sort, and not the entire line or surrounding qoutes / whitespace.
+
+Any unknown classes will be moved to the start of the class list, whilst duplicate classes will be removed.
 
 ### `tailwind-raw-reorder.classRegex`:
 
@@ -125,7 +129,7 @@ Good example value: `valueMatch w-64 h-full bg-blue-400 relative`
 
 ### `tailwind-raw-reorder.runOnSave`:
 
-Tailwind Raw Reorder will run on save by default (if a `tailwind.config.js` file is present within your working directory). This can be toggled on or off.
+Tailwind Raw Reorder will run on save by default (if a `tailwind.config.*` file is present within your working directory). This can be toggled on or off.
 
 `"tailwind-raw-reorder.runOnSave": false`
 
