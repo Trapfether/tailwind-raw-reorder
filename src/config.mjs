@@ -3,6 +3,7 @@ import clearModule from 'clear-module'
 import escalade from 'escalade/sync'
 import * as path from 'path'
 import resolveFrom from 'resolve-from'
+import * as fs from 'fs'
 // @ts-ignore
 import { generateRules as generateRulesFallback } from 'tailwindcss/lib/lib/generateRules'
 // @ts-ignore
@@ -23,28 +24,27 @@ import { expiringMap } from './expiring-map.mjs'
  * @typedef {import('./expiring-map.mjs').ExpiringMap<K,V>} ExpiringMap
  **/
 
-/** @type {Map<string, string | null>} */
-let sourceToPathMap = new Map()
+/** @type {ExpiringMap<string, string | null>} */
+let sourceToPathMap = expiringMap(10_000);
 
 /** @type {ExpiringMap<string | null, ContextContainer>} */
-let pathToContextMap = expiringMap(10_000)
-
-/** @type {ExpiringMap<string, string | null>} */
-let prettierConfigCache = expiringMap(10_000)
+let pathToContextMap = expiringMap(10_000);
 
 /**
  * @param {{filepath: string, tailwindConfig?: string}} options
- * @returns {ContextContainer}
+ * @returns {ContextContainer | undefined}
  */
 export function getTailwindConfig(options) {
   let key = `${options.filepath}:${options.tailwindConfig ?? ''}`
   let baseDir = getBaseDir(options)
 
   // Map the source file to it's associated Tailwind config file
-  let configPath = sourceToPathMap.get(key)
+  let configPath = sourceToPathMap.get(key);
   if (configPath === undefined) {
     configPath = getConfigPath(options, baseDir)
-    sourceToPathMap.set(key, configPath)
+    if (configPath) {
+      sourceToPathMap.set(key, configPath)
+    }
   }
 
   // Now see if we've loaded the Tailwind config file before (and it's still valid)
@@ -55,6 +55,10 @@ export function getTailwindConfig(options) {
 
   // By this point we know we need to load the Tailwind config file
   let result = loadTailwindConfig(baseDir, configPath)
+
+  if (!result) {
+    return undefined;
+  }
 
   pathToContextMap.set(configPath, result)
 
@@ -80,7 +84,7 @@ function getBaseDir(options) {
  *
  * @param {string} baseDir
  * @param {string | null} tailwindConfigPath
- * @returns {ContextContainer}
+ * @returns {ContextContainer | undefined}
  */
 function loadTailwindConfig(baseDir, tailwindConfigPath) {
   let createContext = createContextFallback
@@ -116,6 +120,8 @@ function loadTailwindConfig(baseDir, tailwindConfigPath) {
     clearModule(tailwindConfigPath)
     const loadedConfig = loadConfig(tailwindConfigPath)
     tailwindConfig = loadedConfig.default ?? loadedConfig
+  } else {
+    return undefined;
   }
 
   // suppress "empty content" warning
