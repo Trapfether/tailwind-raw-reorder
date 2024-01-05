@@ -40,7 +40,7 @@ export function activate(context) {
         filepath: editorFilePath
       });
 
-      if (!tailwindConfig) {
+      if (!tailwindConfig && !config.get('tailwind-raw-reorder.IgnoreConfigNotFound')) {
         window.showErrorMessage(
           'Tailwind Raw Reorder: Tailwind config not found'
         );
@@ -122,7 +122,7 @@ export function activate(context) {
           filepath: editorFilePath
         });
 
-        if (!tailwindConfig) {
+        if (!tailwindConfig && !config.get('tailwind-raw-reorder.IgnoreConfigNotFound')) {
           window.showErrorMessage(
             'Tailwind Raw Reorder: Tailwind config not found'
           );
