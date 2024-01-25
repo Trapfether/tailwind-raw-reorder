@@ -127,6 +127,12 @@ Good example value: `valueMatch w-64 h-full bg-blue-400 relative`
 
 <hr>
 
+### `tailwind-raw-reorder.IgnoreConfigNotFound`:
+
+Tailwind Raw Reorder will show an error message by default, `Tailwind Raw Reorder: Tailwind config not found` if `tailwind.config.*` is missing. This can be toggled on to hide and off to show the error message.
+
+`"tailwind-raw-reorder.IgnoreConfigNotFound": true`
+
 ### `tailwind-raw-reorder.runOnSave`:
 
 Tailwind Raw Reorder will run on save by default (if a `tailwind.config.*` file is present within your working directory). This can be toggled on or off.

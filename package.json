@@ -112,6 +112,12 @@
                         "description": "An object with language IDs as keys and their values determining the regex to search for Tailwind CSS classes.",
                         "scope": "window"
                     },
+                    "tailwind-raw-reorder.IgnoreConfigNotFound": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "A flag that controls whether or not to ignore 'Tailwind Raw Reorder: Tailwind config not found' Error Message.",
+                        "scope":"window"
+                    },
                     "tailwind-raw-reorder.runOnSave": {
                         "type": "boolean",
                         "default": true,

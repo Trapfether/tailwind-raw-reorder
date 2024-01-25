@@ -20,6 +20,9 @@ const config = workspace.getConfiguration();
 /** @type {{ [key: string]: LangConfig | LangConfig[] }} */
 const langConfig =
   config.get('tailwind-raw-reorder.classRegex') || {};
+/** @type {{ string: boolean } | undefined} */
+const IgnoreConfigNotFound =
+  config.get('tailwind-raw-reorder.IgnoreConfigNotFound');
 
 /**
  * @param {ExtensionContext} context
@@ -41,9 +44,11 @@ export function activate(context) {
       });
 
       if (!tailwindConfig) {
-        window.showErrorMessage(
-          'Tailwind Raw Reorder: Tailwind config not found'
-        );
+        if (!IgnoreConfigNotFound) {
+          window.showErrorMessage(
+            'Tailwind Raw Reorder: Tailwind config not found'
+          );
+        }
         return;
       }
 
@@ -123,9 +128,11 @@ export function activate(context) {
         });
 
         if (!tailwindConfig) {
-          window.showErrorMessage(
-            'Tailwind Raw Reorder: Tailwind config not found'
-          );
+          if (!IgnoreConfigNotFound) {
+            window.showErrorMessage(
+              'Tailwind Raw Reorder: Tailwind config not found'
+            );
+          };
           return;
         }
 
