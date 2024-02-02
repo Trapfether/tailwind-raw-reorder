@@ -16,3 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Initial rework of the extension to use the same approach as the [Prettier Tailwind plugin]
 * Updated the html and php regexes to only select class attributes proceeded by a space
 * Added Sort Selection command to sort the selected classes
+#### 3.2.0
+* Added Option to ignore tailwind config not found error (thanks to [@kyaruwo](https://github.com/kyaruwo)) in [#11]
+* Added Option to change default tailwind config path
+* Added Output Channel to log errors and info
+* Added startup check for workspace folder. If no workspace folder is found, the extension will not activate
+* Added runtime check for workspace folder based on the active file. If the active file is not in the workspace folder, the extension will not run. This is to prevent the extension from running on files outside the workspace folder
+* If either of the above checks fail, the extension will log an error message to it's output channel

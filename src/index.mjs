@@ -6,7 +6,9 @@ import { getTextMatch, buildMatchers } from './utils.mjs';
 import { spawn } from 'child_process';
 import { rustyWindPath } from 'rustywind';
 import { getTailwindConfig } from './config.mjs';
-import { sortClasses } from './sorting.mjs'
+import { sortClasses } from './sorting.mjs';
+// import resolve from 'path' and rename it to resolvePath
+import { resolve as resolvePath, isAbsolute as isPathAbsolute } from 'path';
 
 /**
  * @typedef {import('vscode').ExtensionContext} ExtensionContext
@@ -16,6 +18,14 @@ import { sortClasses } from './sorting.mjs'
  * @typedef {string | string[] | { regex?: string | string[]; separator?: string; replacement?: string } | undefined} LangConfig
  */
 
+/**
+ * @param {import('vscode').WorkspaceFolder} workspaceFolder
+ * @param {string} path
+ */
+function expandRelativePath(workspaceFolder, path) {
+	return isPathAbsolute(path) ? path : resolvePath(workspaceFolder.uri.fsPath, path);
+}
+
 const config = workspace.getConfiguration();
 /** @type {{ [key: string]: LangConfig | LangConfig[] }} */
 const langConfig =
@@ -23,24 +33,46 @@ const langConfig =
 /** @type {{ string: boolean } | undefined} */
 const IgnoreConfigNotFound =
   config.get('tailwind-raw-reorder.IgnoreConfigNotFound');
+/** @type {import('vscode').WorkspaceFolder | undefined} */
+const workspaceFolder = (workspace.workspaceFolders || [])[0];
+/** @type {string | undefined} */
+const rawTailwindConfigPath = config.get('tailwind-raw-reorder.tailwindConfigPath') ?? undefined;
+const tailwindConfigPath =
+(workspaceFolder && rawTailwindConfigPath && expandRelativePath(workspaceFolder, rawTailwindConfigPath));
+const outputLogChannel = window.createOutputChannel('Tailwind Raw Reorder');
 
 /**
  * @param {ExtensionContext} context
  */
 export function activate(context) {
+	if (!workspaceFolder) { // if we don't have a workspace folder, we should not run the extension
+		// log that no workspace was found
+		const message = 'No workspace found';
+		outputLogChannel.appendLine(message);
+		return;
+	}
+
   let disposable = commands.registerTextEditorCommand(
     'tailwind-raw-reorder.sortTailwindClasses',
     function (editor, edit) {
       const editorText = editor.document.getText();
       const editorLangId = editor.document.languageId;
       const editorFilePath = editor.document.fileName;
+			const editorWorkspace = workspace.getWorkspaceFolder(editor.document.uri);
+			if (!editorWorkspace) {
+				// log that no workspace was found for file
+				const message = `No workspace found for file: ${editorFilePath}`;
+				outputLogChannel.appendLine(message);
+				return;
+			}
 
       const matchers = buildMatchers(
         langConfig[editorLangId] || langConfig['html']
       );
 
       const tailwindConfig = getTailwindConfig({
-        filepath: editorFilePath
+        filepath: editorFilePath,
+				tailwindConfig: tailwindConfigPath
       });
 
       if (!tailwindConfig) {
@@ -124,7 +156,8 @@ export function activate(context) {
         );
 
         const tailwindConfig = getTailwindConfig({
-          filepath: editorFilePath
+          filepath: editorFilePath,
+					tailwindConfig: tailwindConfigPath
         });
 
         if (!tailwindConfig) {

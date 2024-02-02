@@ -139,6 +139,12 @@ Tailwind Raw Reorder will run on save by default (if a `tailwind.config.*` file 
 
 `"tailwind-raw-reorder.runOnSave": false`
 
+### `tailwind-raw-reorder.tailwindConfigPath`:
+
+Tailwind Raw Reorder will look for a `tailwind.config.*` file within your working directory by default. This can be customized to look for a `tailwind.config.*` file in a different location. You can use a relative path from the workspace root or an absolute path. You will need to reload the window after changing this setting.
+
+`"tailwind-raw-reorder.tailwindConfigPath": "path/to/tailwind.config.js"`
+
 ## Contributing
 
 Tailwind Raw Reorder is open-source and contributions are always welcome. If you're interested in submitting a pull request, please take a moment to review [CONTRIBUTING.md](.github/CONTRIBUTING.md).

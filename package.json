@@ -14,7 +14,7 @@
         "color": "#f1f5f8"
     },
     "icon": "tailwind-raw-reorder-icon.gif",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "publisher": "Trapfether",
     "license": "MIT",
     "author": "Andrew Trefethen <andrew.l.trefethen@gmail.com>",
@@ -123,7 +123,13 @@
                         "default": true,
                         "description": "A flag that controls whether or not Tailwind Raw Reorder will sort your Tailwind CSS classes on save.",
                         "scope": "window"
-                    }
+                    },
+										"tailwind-raw-reorder.tailwindConfigPath": {
+												"type": ["string", "null"],
+												"default": null,
+												"description": "The path to your tailwind.config.js file. This is used to determine the order of your classes.",
+												"scope": "window"
+										}
                 }
             }
         ]
