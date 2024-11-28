@@ -75,7 +75,7 @@
                             ],
                             "vue": [
                                 [
-                                    "\\s(?:class|enter-from-class|enter-active-class|enter-to-class|leave-from-class|leave-active-class|leave-to-class)=(([\"'`])(?:(?:[^{}<>](?!\\2))|\\\\\\2)+[^{}<>])\\2",
+                                    "\\s(?:class|enter-from-class|enter-active-class|enter-to-class|leave-from-class|leave-active-class|leave-to-class|move-class)=(([\"'`])(?:(?:[^{}<>](?!\\2))|\\\\\\2)+[^{}<>])\\2",
                                     "[\"'`]([^]+)"
                                 ]
                             ],
