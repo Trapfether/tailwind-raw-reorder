@@ -73,6 +73,12 @@
                                     "[\"'`]([^]+)"
                                 ]
                             ],
+                            "vue": [
+                                [
+                                    "\\s(?:class|enter-from-class|enter-active-class|enter-to-class|leave-from-class|leave-active-class|leave-to-class|move-class)=(([\"'`])(?:(?:[^{}<>](?!\\2))|\\\\\\2)+[^{}<>])\\2",
+                                    "[\"'`]([^]+)"
+                                ]
+                            ],
                             "css": "\\B@apply\\s+([\\._a-zA-Z0-9\\s\\-\\:\\/]+);",
                             "javascript": [
                                 [
@@ -124,12 +130,12 @@
                         "description": "A flag that controls whether or not Tailwind Raw Reorder will sort your Tailwind CSS classes on save.",
                         "scope": "window"
                     },
-										"tailwind-raw-reorder.tailwindConfigPath": {
-												"type": ["string", "null"],
-												"default": null,
-												"description": "The path to your tailwind.config.js file. This is used to determine the order of your classes.",
-												"scope": "window"
-										}
+                    "tailwind-raw-reorder.tailwindConfigPath": {
+                        "type": ["string", "null"],
+                        "default": null,
+                        "description": "The path to your tailwind.config.js file. This is used to determine the order of your classes.",
+                        "scope": "window"
+                    }
                 }
             }
         ]
